@@ -1,6 +1,8 @@
 package com.chemax.project.service;
 
-import com.chemax.project.national_holidays.NationalHolidays;
+import com.chemax.project.util.NationalHolidays;
+import com.chemax.project.util.NationalHolidays2022;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -15,6 +17,7 @@ import java.util.Set;
 public class HolidayPayService {
 
     private static final BigDecimal AVERAGE_DAYS_IN_MONTH = BigDecimal.valueOf(29.3);
+    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("dd-MM-yyyy");
 
     private final NationalHolidays nationalHolidays;
 
@@ -23,28 +26,26 @@ public class HolidayPayService {
         this.nationalHolidays = nationalHolidays;
     }
 
-    private int evaluatePayableVacationDays(String startVacationDay, String endVacationDay) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
-        LocalDate startVacationDate = LocalDate.parse(startVacationDay, formatter);
-        LocalDate endVacationDate = LocalDate.parse(endVacationDay, formatter);
-        LocalDate vacationDay = startVacationDate;
+    private int evaluatePayableVacationDays(LocalDate startVacationDay, LocalDate endVacationDay) {
+//        LocalDate startVacationDate = LocalDate.parse(startVacationDay, FORMATTER);
+//        LocalDate endVacationDate = LocalDate.parse(endVacationDay, FORMATTER);
         Set<LocalDate> vacationDays = new HashSet<>();
-        while(!vacationDay.isEqual(endVacationDate)) {
-            vacationDays.add(vacationDay);
-            vacationDay = vacationDay.plusDays(1);
+        while(!startVacationDay.isEqual(endVacationDay)) {
+            vacationDays.add(startVacationDay);
+            startVacationDay = startVacationDay.plusDays(1);
         }
-        vacationDays.removeAll(nationalHolidays.getNationalHolidays());
+        vacationDays.removeAll(NationalHolidays.asLocalDateSet());
         return vacationDays.size();
     }
 
 
     //TODO:подумать как лучше
-    public BigDecimal calculate(double averageSalary, int vacationDaysCount) {
+    public BigDecimal calculate(double averageSalary, int vacationDaysCount, LocalDate startVacationDay,
+                                LocalDate endVacationDay) {
+        if (startVacationDay != null && endVacationDay != null) {
+            vacationDaysCount = evaluatePayableVacationDays(startVacationDay, endVacationDay);
+        }
         return BigDecimal.valueOf(averageSalary).divide(AVERAGE_DAYS_IN_MONTH, RoundingMode.UP)
-                .multiply(BigDecimal.valueOf(vacationDaysCount));
+                    .multiply(BigDecimal.valueOf(vacationDaysCount));
     }
-//
-//    public BigDecimal calculateWithInterval(double averageSalary, String startVacationDay, String endVacationDay) {
-//        return averageSalary / AVERAGE_DAYS_IN_MONTH * evaluatePayableVacationDays(startVacationDay, endVacationDay);
-//    }
 }
