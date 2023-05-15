@@ -11,6 +11,7 @@ import java.time.LocalDate;
 public class VacationPayService {
 
     private static final BigDecimal AVERAGE_DAYS_IN_MONTH = BigDecimal.valueOf(29.3);
+    private static final BigDecimal INCOME_TAX_COEFFICIENT = BigDecimal.valueOf(0.87);
 
     private int evaluatePayableVacationDays(LocalDate startVacationDate, LocalDate endVacationDate) {
         return (int) startVacationDate.datesUntil(endVacationDate.plusDays(1))
@@ -24,6 +25,7 @@ public class VacationPayService {
         }
         return BigDecimal.valueOf(averageSalary).setScale(2, RoundingMode.HALF_UP)
                 .divide(AVERAGE_DAYS_IN_MONTH, RoundingMode.HALF_UP)
-                .multiply(BigDecimal.valueOf(payableVacationDaysCount));
+                .multiply(BigDecimal.valueOf(payableVacationDaysCount))
+                .multiply(INCOME_TAX_COEFFICIENT).setScale(2, RoundingMode.HALF_UP);
     }
 }

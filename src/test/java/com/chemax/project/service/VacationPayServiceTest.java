@@ -32,8 +32,8 @@ public class VacationPayServiceTest {
                 LocalDate.parse("2023-07-01"), null);
         assertNotNull(actual);
         assertEquals(BigDecimal.ZERO.setScale(2), actualWithPayableVacationDaysCountIs0);
-        assertEquals(actualWithStartAndEndVacationDatesWithoutNationalHolidays, BigDecimal.valueOf(23890.72));
-        assertEquals(actualWithStartAndEndVacationDatesWithOneNationalHoliday, BigDecimal.valueOf(22184.24));
-        assertEquals(actualWithOneDateInRequest, BigDecimal.valueOf(23890.72));
+        assertEquals(actualWithStartAndEndVacationDatesWithoutNationalHolidays, BigDecimal.valueOf(20784.93));
+        assertEquals(actualWithStartAndEndVacationDatesWithOneNationalHoliday, BigDecimal.valueOf(19300.29));
+        assertEquals(actualWithOneDateInRequest, BigDecimal.valueOf(20784.93));
     }
 }
