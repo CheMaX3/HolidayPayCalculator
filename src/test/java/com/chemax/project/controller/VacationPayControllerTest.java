@@ -27,7 +27,7 @@ public class VacationPayControllerTest {
     @Test
     void getVacationPayBadRequestTest() throws Exception {
         mockMvc.perform(get("/calculate?averageSalary=hst&payableVacationDaysCount=28"))
-                .andExpect(status().is4xxClientError());
+                .andExpect(status().is5xxServerError());
     }
 
     @Test

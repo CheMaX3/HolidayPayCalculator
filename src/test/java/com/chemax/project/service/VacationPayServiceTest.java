@@ -1,5 +1,6 @@
 package com.chemax.project.service;
 
+import com.chemax.project.exception.BadRequestException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -7,8 +8,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 public class VacationPayServiceTest {
@@ -16,24 +16,54 @@ public class VacationPayServiceTest {
     @Autowired
     private VacationPayService service;
 
+    private final BigDecimal RESULT_OF_DIVISION_50000_TO_29_3_AND_MULTIPLICATION_TO_28_AND_MULTIPLICATION_TO_0_87
+            = new BigDecimal("41569.85");
+    private final BigDecimal RESULT_OF_DIVISION_50000_TO_29_3_AND_MULTIPLICATION_TO_14_AND_MULTIPLICATION_TO_0_87
+            = new BigDecimal("20784.93");
+    private final BigDecimal RESULT_OF_DIVISION_50000_TO_29_3_AND_MULTIPLICATION_TO_13_AND_MULTIPLICATION_TO_0_87
+            = new BigDecimal("19300.29");
+
     @Test
-    void calculateTest() {
-        BigDecimal actual = service.calculate(50000, 28, null
+    void positiveCalculateTest() {
+        BigDecimal actualWithGoodRequest = service.calculate("50000", 28
+                , null
                 , null);
-        BigDecimal actualWithPayableVacationDaysCountIs0 = service.calculate(50000, 0
+        BigDecimal actualWithPayableVacationDaysCountIs0 = service.calculate("50000", 0
                 , null, null);
+        assertEquals(actualWithGoodRequest,
+                RESULT_OF_DIVISION_50000_TO_29_3_AND_MULTIPLICATION_TO_28_AND_MULTIPLICATION_TO_0_87);
+        assertEquals(BigDecimal.ZERO.setScale(2), actualWithPayableVacationDaysCountIs0);
+    }
+
+    @Test
+    void negativeCalculateTest() {
+        assertThrows(BadRequestException.class, () ->  service.calculate("10", -5
+                , null, null));
+        assertThrows(BadRequestException.class, () ->  service.calculate("-10", 5
+                , null, null));
+    }
+
+    @Test
+    void calculationWithEvaluationPayableVacationDaysPositiveTest() {
         BigDecimal actualWithStartAndEndVacationDatesWithoutNationalHolidays =
-                service.calculate(50000, 28, LocalDate.parse("2023-07-01")
+                service.calculate("50000", 28, LocalDate.parse("2023-07-01")
                         , LocalDate.parse("2023-07-14"));
         BigDecimal actualWithStartAndEndVacationDatesWithOneNationalHoliday =
-                service.calculate(50000, 10, LocalDate.parse("2023-06-01"),
+                service.calculate("50000", 10, LocalDate.parse("2023-06-01"),
                         LocalDate.parse("2023-06-14"));
-        BigDecimal actualWithOneDateInRequest = service.calculate(50000, 14,
+        BigDecimal actualWithOneDateInRequest = service.calculate("50000", 14,
                 LocalDate.parse("2023-07-01"), null);
-        assertNotNull(actual);
-        assertEquals(BigDecimal.ZERO.setScale(2), actualWithPayableVacationDaysCountIs0);
-        assertEquals(actualWithStartAndEndVacationDatesWithoutNationalHolidays, BigDecimal.valueOf(20784.93));
-        assertEquals(actualWithStartAndEndVacationDatesWithOneNationalHoliday, BigDecimal.valueOf(19300.29));
-        assertEquals(actualWithOneDateInRequest, BigDecimal.valueOf(20784.93));
+        assertEquals(actualWithStartAndEndVacationDatesWithoutNationalHolidays,
+                RESULT_OF_DIVISION_50000_TO_29_3_AND_MULTIPLICATION_TO_14_AND_MULTIPLICATION_TO_0_87);
+        assertEquals(actualWithStartAndEndVacationDatesWithOneNationalHoliday,
+                RESULT_OF_DIVISION_50000_TO_29_3_AND_MULTIPLICATION_TO_13_AND_MULTIPLICATION_TO_0_87);
+        assertEquals(actualWithOneDateInRequest,
+                RESULT_OF_DIVISION_50000_TO_29_3_AND_MULTIPLICATION_TO_14_AND_MULTIPLICATION_TO_0_87);
+    }
+
+    @Test
+    void calculationWithStartVacationDateLaterThenEndVacationDateTest() {
+        assertThrows(IllegalArgumentException.class, () -> service.calculate("50000"
+                , 28, LocalDate.parse("2023-07-01"), LocalDate.parse("2023-06-01")));
     }
 }

@@ -17,12 +17,12 @@ public class VacationPayController {
     }
 
     @GetMapping("/calculate")
-    public BigDecimal getVacationPay(@RequestParam double averageSalary,
-                                    @RequestParam int payableVacationDaysCount,
-                                    @RequestParam(required = false)
-                                        @DateTimeFormat(pattern = "dd-MM-yyyy") LocalDate startVacationDate,
-                                    @RequestParam(required = false)
-                                        @DateTimeFormat(pattern = "dd-MM-yyyy") LocalDate endVacationDate) {
+    public BigDecimal getVacationPay(@RequestParam String averageSalary,
+                                     @RequestParam int payableVacationDaysCount,
+                                     @RequestParam(required = false)
+                                         @DateTimeFormat(pattern = "dd-MM-yyyy") LocalDate startVacationDate,
+                                     @RequestParam(required = false)
+                                         @DateTimeFormat(pattern = "dd-MM-yyyy") LocalDate endVacationDate) {
         return service.calculate(averageSalary, payableVacationDaysCount, startVacationDate, endVacationDate);
     }
 }
