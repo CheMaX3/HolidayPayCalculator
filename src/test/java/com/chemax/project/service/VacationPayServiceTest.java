@@ -30,8 +30,8 @@ public class VacationPayServiceTest {
                 , null);
         BigDecimal actualWithPayableVacationDaysCountIs0 = service.calculate("50000", 0
                 , null, null);
-        assertEquals(actualWithGoodRequest,
-                RESULT_OF_DIVISION_50000_TO_29_3_AND_MULTIPLICATION_TO_28_AND_MULTIPLICATION_TO_0_87);
+        assertEquals(RESULT_OF_DIVISION_50000_TO_29_3_AND_MULTIPLICATION_TO_28_AND_MULTIPLICATION_TO_0_87
+                , actualWithGoodRequest);
         assertEquals(BigDecimal.ZERO.setScale(2), actualWithPayableVacationDaysCountIs0);
     }
 
@@ -53,12 +53,12 @@ public class VacationPayServiceTest {
                         LocalDate.parse("2023-06-14"));
         BigDecimal actualWithOneDateInRequest = service.calculate("50000", 14,
                 LocalDate.parse("2023-07-01"), null);
-        assertEquals(actualWithStartAndEndVacationDatesWithoutNationalHolidays,
-                RESULT_OF_DIVISION_50000_TO_29_3_AND_MULTIPLICATION_TO_14_AND_MULTIPLICATION_TO_0_87);
-        assertEquals(actualWithStartAndEndVacationDatesWithOneNationalHoliday,
-                RESULT_OF_DIVISION_50000_TO_29_3_AND_MULTIPLICATION_TO_13_AND_MULTIPLICATION_TO_0_87);
-        assertEquals(actualWithOneDateInRequest,
-                RESULT_OF_DIVISION_50000_TO_29_3_AND_MULTIPLICATION_TO_14_AND_MULTIPLICATION_TO_0_87);
+        assertEquals(RESULT_OF_DIVISION_50000_TO_29_3_AND_MULTIPLICATION_TO_14_AND_MULTIPLICATION_TO_0_87
+                , actualWithStartAndEndVacationDatesWithoutNationalHolidays);
+        assertEquals(RESULT_OF_DIVISION_50000_TO_29_3_AND_MULTIPLICATION_TO_13_AND_MULTIPLICATION_TO_0_87
+                , actualWithStartAndEndVacationDatesWithOneNationalHoliday);
+        assertEquals(RESULT_OF_DIVISION_50000_TO_29_3_AND_MULTIPLICATION_TO_14_AND_MULTIPLICATION_TO_0_87
+                , actualWithOneDateInRequest);
     }
 
     @Test

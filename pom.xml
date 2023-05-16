@@ -11,7 +11,7 @@
     </parent>
 
     <groupId>org.chemax</groupId>
-    <artifactId>VacationPayCalculator</artifactId>
+    <artifactId>vacationPayCalculator</artifactId>
     <version>1.0-SNAPSHOT</version>
 
     <properties>
